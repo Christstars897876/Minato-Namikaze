@@ -2,185 +2,193 @@ const axios = require("axios");
 const { getPrefix } = global.utils;
 const { commands, aliases } = global.GoatBot;
 
-const fontUrl = "https://raw.githubusercontent.com/Azadwebapi/Azadx69x-bm-store/main/font.json";
-const categoryUrl = "https://raw.githubusercontent.com/Azadwebapi/Azadx69x-bm-store/main/category.json";
+let xfont = null;
+let yfont = null;
+let categoryEmoji = null;
 
-let fontMap = {};
-let categoryMap = {};
-let isLoading = false;
-
-async function loadFont() {
-  try {
-    const res = await axios.get(fontUrl, { timeout: 5000 });
-    fontMap = res.data || {};
-  } catch (err) {
-    console.error("❌ Font load failed:", err.message);
-  }
+async function loadResources() {
+ try {
+ const [catRes, cmdRes, emojiRes] = await Promise.all([
+ axios.get("https://raw.githubusercontent.com/Saim-x69x/sakura/main/xfont.json"),
+ axios.get("https://raw.githubusercontent.com/Saim-x69x/sakura/main/yfont.json"),
+ axios.get("https://raw.githubusercontent.com/Saim-x69x/sakura/main/category.json")
+ ]);
+ xfont = catRes.data;
+ yfont = cmdRes.data;
+ categoryEmoji = emojiRes.data;
+ } catch (err) {}
 }
 
-async function loadCategory() {
-  if (isLoading) return;
-  isLoading = true;
-  
-  try {
-    const res = await axios.get(categoryUrl, { timeout: 5000 });
-    const rawData = res.data || {};
-    categoryMap = {};
-    
-    Object.keys(rawData).forEach(key => {
-      categoryMap[key.toLowerCase().trim()] = rawData[key];
-    });
-    
-    console.log("✅ Categories loaded:", Object.keys(categoryMap).length);
-  } catch (err) {
-    console.error("❌ Category load failed:", err.message);
-    categoryMap = {};
-  } finally {
-    isLoading = false;
-  }
+function fontConvert(text, type = "command") {
+ const fontMap = type === "category" ? xfont : yfont;
+ if (!fontMap) return text;
+ return text.split("").map(ch => fontMap[ch] || ch).join("");
 }
 
-function toBold(text) {
-  if (!text) return "";
-  return text.split("").map(ch => fontMap[ch] || ch).join("");
+function getCategoryEmoji(cat) {
+ return categoryEmoji?.[cat.toLowerCase()] || "🗂️";
 }
 
-function getCategoryEmoji(category) {
-  if (Object.keys(categoryMap).length === 0 && !isLoading) {
-    loadCategory();
-  }
-  
-  const cat = (category || "").toLowerCase().trim();
-  return categoryMap[cat] || "📁";
+function levenshteinDistance(a, b) {
+ const matrix = Array(b.length + 1).fill(0).map(() => Array(a.length + 1).fill(0));
+ for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
+ for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
+ for (let j = 1; j <= b.length; j++) {
+ for (let i = 1; i <= a.length; i++) {
+ const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+ matrix[j][i] = Math.min(
+ matrix[j][i - 1] + 1,
+ matrix[j - 1][i] + 1,
+ matrix[j - 1][i - 1] + cost
+ );
+ }
+ }
+ return matrix[b.length][a.length];
+}
+
+function getClosestCommand(name) {
+ const lower = name.toLowerCase();
+ let best = null, dist = Infinity;
+ for (const cmd of commands.keys()) {
+ const d = levenshteinDistance(lower, cmd.toLowerCase());
+ if (d < dist) {
+ dist = d;
+ best = cmd;
+ }
+ }
+ return dist <= 3 ? best : null;
+}
+
+function roleTextToString(role) {
+ switch (role) {
+ case 0: return "All Users";
+ case 1: return "Group Admins";
+ case 2: return "VIP Users";
+ case 3: return "Bot Admin";
+ case 4: return "Bot Creator";
+ default: return "Unknown";
+ }
 }
 
 module.exports = {
-  config: {
-    name: "help",
-    version: "0.0.7",
-    author: "chrisst",
-    role: 0,
-    countDown: 5,
-    description: { 
-      en: "📚 Show command list or command details" 
-    },
-    category: "Info",
-    guide: {
-      en: "{pn} [command_name]"
-    }
-  },
+ config: {
+ name: "help",
+ aliases: "menu",
+ version: "2.0",
+ author: "chris st",
+ countDown: 5,
+ role: 0,
+ shortDescription: { en: "Shows all commands or details." },
+ longDescription: { en: "Display categories, command lists or specific command info." },
+ category: "info",
+ guide: { en: "{pn}, {pn} [command], {pn} -c [category]" }
+ },
 
-  onStart: async function ({ message, args, event, role }) {
-    if (Object.keys(fontMap).length === 0) await loadFont();
-    if (Object.keys(categoryMap).length === 0) await loadCategory();
-    
-    const prefix = getPrefix(event.threadID);
-    const input = args[0]?.toLowerCase();
+ onStart: async function ({ message, args, event, role }) {
+ const prefix = getPrefix(event.threadID);
 
-    let cmd = null;
-    
-    if (input) {
-      if (commands.has(input)) {
-        cmd = commands.get(input);
-      } else if (aliases.has(input)) {
-        cmd = commands.get(aliases.get(input));
-      } else {
-        return message.reply(
-`❌ 𝐌𝐈𝐍𝐀𝐓𝐎 𝐍𝐀 𝐏𝐀𝐒 𝐓𝐑𝐎𝐔𝐕𝐄𝐑
-🔍 𝐂𝐌𝐃: "${input}"`
-        );
-      }
-    }
-    
-    if (cmd) {
-      const cfg = cmd.config;
-      const desc = typeof cfg.description === "string" ? cfg.description : cfg.description?.en || "❌ 𝗡𝗼 𝗱𝗲𝘀𝗰𝗿𝗶𝗽𝘁𝗶𝗼𝗻";
-      const usage = typeof cfg.guide?.en === "string" ? 
-        cfg.guide.en.replace(/\{pn\}/g, prefix + cfg.name) : 
-        `${prefix}${cfg.name}`;
+ if (!xfont || !yfont || !categoryEmoji) await loadResources();
 
-      const aliasesList = cfg.aliases ? 
-        cfg.aliases.map(a => `${prefix}${a}`).join(", ") : 
-        "❌ 𝗡𝗼𝗻𝗲";
+ const categories = {};
+ for (const [name, cmd] of commands) {
+ if (!cmd?.config || typeof cmd.onStart !== "function") continue;
+ if (cmd.config.role > role) continue;
+ const cat = (cmd.config.category || "UNCATEGORIZED").toUpperCase();
+ if (!categories[cat]) categories[cat] = [];
+ categories[cat].push(name);
+ }
 
-      const helpMessage = `┍━━━[ 📚 ${toBold("𝙼𝙸𝙽𝙰𝚃𝙾")} ]━━━◊
-┋➥ 📛 ${toBold("Name")}: ${prefix}${cfg.name}
-┋➥ 🗂️ ${toBold("Category")}: ${getCategoryEmoji(cfg.category)} ${cfg.category || "❌ 𝗨𝗻𝗰𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝘇𝗲𝗱"}
-┋➥ 📄 ${toBold("Description")}: ${desc}
-┋➥ ⚙️ ${toBold("Version")}: ${cfg.version || "1.0"}
-┋➥ ⏳ ${toBold("Cooldown")}: ${cfg.countDown || 1}s
-┋➥ 🔒 ${toBold("Role")}: ${cfg.role === 0 ? "👤 𝗔𝗹𝗹" : cfg.role === 1 ? "👑 𝗔𝗱𝗺𝗶𝗻" : "⚡ 𝗢𝘄𝗻𝗲𝗿"}
-┋➥ 👑 ${toBold("Author")}: ${cfg.author || "❌ 𝗨𝗻𝗸𝗻𝗼𝘄𝗻"}
-┋➥ 🔤 ${toBold("Aliases")}: ${aliasesList}
-┍━━━[ 📘 ${toBold("USAGE")} ]━━━◊
-${usage.split('\n').map(line => `┋➥ ${line}`).join('\n')}
-┍━━━[ 💡 ${toBold("NOTES")} ]━━━◊
-┋➥ <text> = Replaceable content
-┋➥ [a|b] = Choose option a or b
-┋➥ ( ) = Optional parameter
-┋➥ {pn} = Bot prefix
-┕━━━━━━━━━━━━━━━━◊`;
-        
-      try {
-        await message.reply({
-          body: helpMessage,
-          attachment: await global.utils.getStreamFromURL("https://i.imgur.com/6OOkNJM.jpeg")
-        });
-      } catch (error) {
-        console.log("GIF attachment failed, sending text only:", error);
-        await message.reply(helpMessage);
-      }
-      return;
-    }
-      
-    const categories = {};
-    for (const [, c] of commands) {
-      if (c.config.role > role) continue;
-      const cat = c.config.category || "Uncategorized";
-      if (!categories[cat]) categories[cat] = [];
-      categories[cat].push(c.config.name);
-    }
+ const helpImage = "https://i.ibb.co/3yhR82KT/684797258-1327405002818159-3504065921443860282-n-jpg-stp-dst-jpg-p480x480-tt6-nc-cat-109-ccb-1-7-n.jpg";
+ const input = args.join(" ").trim();
 
-    let msg = `┍━━━[ 📚 ${toBold("𝙽𝙰𝙼𝙸𝙺𝙰𝚉𝙴")} ]━━━◊\n`;
-      
-    const sortedCategories = Object.keys(categories).sort();
-    
-    for (const cat of sortedCategories) {
-      const categoryName = toBold(cat.toUpperCase());
-      const commandsList = categories[cat].sort();
-      const emoji = getCategoryEmoji(cat);
-      
-      msg += `┍━━━[ ${emoji} ${categoryName} ]━━━◊\n`;
-        
-      for (let i = 0; i < commandsList.length; i += 2) {
-        const cmd1 = commandsList[i];
-        const cmd2 = commandsList[i + 1];
-        
-        const line = cmd2 ? 
-          `┋➥ ${cmd1.padEnd(15)} ${cmd2}` :
-          `┋➥ ${cmd1}`;
-        
-        msg += line + "\n";
-      }
-      
-      msg += "┕━━━━━━━━━━━━━━━━━◊\n";
-    }
+ if (args[0] === "-c" && args[1]) {
+ const categoryName = args[1].toUpperCase();
+ if (!categories[categoryName]) {
+ return message.reply(`❌ Category "${categoryName}" not found.`);
+ }
 
-    msg += `┍━━━[ 🚀 ${toBold("INFO")} ]━━━◊
-┋➥ ${toBold("bienvenue chez minato namikaze!")}
-┋➥ ${toBold("Prefix")}: [ ${prefix} ]
-┋➥ ${toBold("Developer")}: chris st
-┋➥ ${toBold("Use")}: ${prefix}help <command>
-┕━━━━━━━━━━━━━━━━◊`;
-      
-    try {
-      await message.reply({
-        body: msg,
-        attachment: await global.utils.getStreamFromURL("https://i.ibb.co/5X9T2dDN/image0.gif")
-      });
-    } catch (error) {
-      console.log("GIF attachment failed, sending text only:", error);
-      await message.reply(msg);
-    }
-  }
+ const emoji = getCategoryEmoji(categoryName);
+ const list = categories[categoryName];
+ const total = list.length;
+
+ let msg = "";
+ msg += "━━━━━━━━━━━━━━\n";
+ msg += `𝐂𝐀𝐓𝐄𝐆𝐎𝐑𝐘: ${emoji} | ${fontConvert(categoryName, "category")}\n`;
+ msg += "╭──────୨ৎ──────╮\n";
+
+ for (const cmd of list.sort()) {
+ msg += `╎ ᯓ✧. ${fontConvert(cmd, "command")}\n`;
+ }
+
+ msg += "┕━─────୨ৎ─────━ᥫ᭡\n";
+ msg += "• 𝙽𝚎𝚎𝚍 𝚑𝚎𝚕𝚙 𝚠𝚒𝚝𝚑 𝚊 𝚌𝚘𝚖𝚖𝚊𝚗𝚍? 𝚄𝚜𝚎 /𝚑𝚎𝚕𝚙 <𝚌𝚘𝚖𝚖𝚊𝚗𝚍𝚗𝚊𝚖𝚎>.\n";
+ msg += "╭──────୨ৎ──────╮\n";
+ msg += `╎ 🔢 𝚃𝙾𝚃𝙰𝙻𝙸𝚃𝙴 𝙳𝙴𝚂 𝙲𝙼𝙳: ${total}\n`;
+ msg += `╎ ⚡️ 𝙿𝚁𝙴𝙵𝙸𝚇: ${prefix}\n`;
+ msg += "╎ 👤 𝙲𝚁𝙴𝙰𝚃𝙴𝚄𝚁: 𝐶𝐻𝑅𝐼𝑆 𝑆𝑇\n";
+ msg += "╰──────୨ৎ──────╯";
+
+ return message.reply({
+ body: msg,
+ attachment: await global.utils.getStreamFromURL(helpImage)
+ });
+ }
+
+ if (!input) {
+ let msg = "";
+ msg += "━━━━━━━━━━━━━━\n";
+ msg += "𝚌𝚖𝚍 𝚍𝚒𝚜𝚙𝚘𝚗𝚒𝚋𝚕𝚎 𝚌𝚑𝚎𝚣 𝚖𝚒𝚗𝚊𝚝𝚘:\n";
+ msg += "━━━━━━━━━━━━━━\n";
+
+ for (const cat of Object.keys(categories).sort()) {
+ msg += `┍─━〔 ${getCategoryEmoji(cat)} | ${fontConvert(cat, "category")} 〕\n`;
+ for (const cmd of categories[cat].sort()) {
+ msg += `╎ᯓ✧. ${fontConvert(cmd, "command")}\n`;
+ }
+ msg += "┕━─────୨ৎ─────━ᥫ᭡\n";
+ }
+
+ msg += "• 𝙽𝚎𝚎𝚍 𝚑𝚎𝚕𝚙 𝚠𝚒𝚝𝚑 𝚊 𝚌𝚘𝚖𝚖𝚊𝚗𝚍? 𝚄𝚜𝚎 /𝚑𝚎𝚕𝚙 <𝚌𝚘𝚖𝚖𝚊𝚗𝚍𝚗𝚊𝚖𝚎>.\n";
+ msg += "╭──────୨ৎ──────╮\n";
+ msg += `╎ 🔢 𝚃𝙾𝚃𝙰𝙻𝙸𝚃𝙴 𝙳𝙴𝚂 𝙲𝙼𝙳: ${commands.size}\n`;
+ msg += `╎ ⚡️ 𝙿𝚁𝙴𝙵𝙸𝚇: ${prefix}\n`;
+ msg += "╎ 👤 𝙲𝚁𝙴𝙰𝚃𝙴𝚄𝚁: 𝐶𝐻𝑅𝐼𝑆 𝑆𝑇\n";
+ msg += "╰──────୨ৎ──────╯";
+
+ return message.reply({
+ body: msg,
+ attachment: await global.utils.getStreamFromURL(helpImage)
+ });
+ }
+
+ const cmdName = input.toLowerCase();
+ const cmd = commands.get(cmdName) || commands.get(aliases.get(cmdName));
+
+ if (!cmd || !cmd.config) {
+ const suggestion = getClosestCommand(cmdName);
+ return message.reply(
+ suggestion
+ ? `❌ Command "${cmdName}" not found.\n👉 Maybe you meant: ${suggestion}`
+ : `❌ Command "${cmdName}" not found.`
+ );
+ }
+
+ const c = cmd.config;
+ const usage = c.guide?.en?.replace(/{pn}/g, `${prefix}${c.name}`) || "No usage.";
+
+ const msg = `
+╭═══ [ 𝙼𝙸𝙽𝙰𝚃𝙾 𝙽𝙰𝙼𝙸𝙺𝙰𝚉𝙴𝚅𝟹 ] ═══╮
+╎🥷 Name : ${c.name}
+╎📦 Category : ${(c.category || "UNCATEGORIZED").toUpperCase()}
+╎📜 Description: ${c.longDescription?.en || "No description."}
+╎🔁 Aliases : ${c.aliases ? c.aliases.join(", ") : "None"}
+╎⚙️ Version : ${c.version || "1.0"}
+╎🔐 Permission : ${c.role} (${roleTextToString(c.role)})
+╎⏱️ Cooldown : ${c.countDown || 5}s
+╎👑 Author : ${c.author || "Unknown"}
+╎📖 Usage : ${usage}
+╰═════════୨ৎ═════════╯`;
+
+ return message.reply(msg);
+ }
 };
