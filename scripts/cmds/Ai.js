@@ -170,7 +170,7 @@ const handleAIRequest = async (api, event, userInput, message, isReply = false) 
 
     let finalReply = textReply || '✅ AI Response:';
     finalReply = finalReply
-      .replace(/🎀\s*𝗦𝗵𝗮𝗱𝗼𝘄/gi, '🎀 𝗦𝗵𝗮𝗱𝗼𝘄')
+      .replace(/🥷\s*𝙼𝙸𝙽𝙰𝚃𝙾/gi, '🥷 𝙼𝙸𝙽𝙰𝚃𝙾')
       .replace(/shadow/gi, 'shadow')
       .replace(/shadoka/gi, 'shadow')
       .replace(/shadow gardien/gi, 'shadow');
