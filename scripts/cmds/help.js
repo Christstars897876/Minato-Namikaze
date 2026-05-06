@@ -103,7 +103,7 @@ module.exports = {
         cfg.aliases.map(a => `${prefix}${a}`).join(", ") : 
         "❌ 𝗡𝗼𝗻𝗲";
 
-      const helpMessage = `┍━━━[ 📚 ${toBold("𝙼𝙸𝙽𝙰𝚃𝙾 𝙽𝙰𝙼𝙸𝙺𝙰𝚉𝙴")} ]━━━◊
+      const helpMessage = `┍━━━[ 📚 ${toBold("𝙼𝙸𝙽𝙰𝚃𝙾")} ]━━━◊
 ┋➥ 📛 ${toBold("Name")}: ${prefix}${cfg.name}
 ┋➥ 🗂️ ${toBold("Category")}: ${getCategoryEmoji(cfg.category)} ${cfg.category || "❌ 𝗨𝗻𝗰𝗮𝘁𝗲𝗴𝗼𝗿𝗶𝘇𝗲𝗱"}
 ┋➥ 📄 ${toBold("Description")}: ${desc}
@@ -141,7 +141,7 @@ ${usage.split('\n').map(line => `┋➥ ${line}`).join('\n')}
       categories[cat].push(c.config.name);
     }
 
-    let msg = `┍━━━[ 📚 ${toBold("X69X MENU")} ]━━━◊\n`;
+    let msg = `┍━━━[ 📚 ${toBold("𝙽𝙰𝙼𝙸𝙺𝙰𝚉𝙴")} ]━━━◊\n`;
       
     const sortedCategories = Object.keys(categories).sort();
     
