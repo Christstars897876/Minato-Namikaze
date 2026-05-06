@@ -1,4 +1,6 @@
-<img src="https://i.imgur.com/1OBaQZd.jpeg" alt="banner">
+<div align="center">
+  <img src="https://i.imgur.com/1OBaQZd.jpeg" width="90%" style="border-radius:12px; border: 2px solid #00FFFF;"/>
+</div>
 <h1 align="center">𝐌𝐈𝐍𝐀𝐓𝐎 𝐍𝐀𝐌𝐈𝐊𝐀𝐙𝐄 𝗖𝗵𝗮𝘁𝗯𝗼𝘁 𝗠𝗲𝘀𝘀𝗲𝗻𝗴𝗲𝗿</h1>
 ## 🔐 Permission Levels
 
