@@ -17,3 +17,16 @@
 | 6 🌟 | Creator | `██████` | **Highest** |
 
 </div>
+## 📊 Project Status
+
+<div align="center">
+
+| Module | Progress | State |
+|:------:|:--------:|:-----:|
+| 💻 Core Code | ![95%](https://img.shields.io/badge/95%25-■■■■■■■■■□-00CED1?style=flat-square) | ✅ Done |
+| 🧪 Testing | ![80%](https://img.shields.io/badge/80%25-■■■■■■■■□□-FFD700?style=flat-square) | 🔄 Active |
+| 📄 Docs | ![90%](https://img.shields.io/badge/90%25-■■■■■■■■■□-8A2BE2?style=flat-square) | ✅ Done |
+| ⚡ Performance | ![98%](https://img.shields.io/badge/98%25-■■■■■■■■■■-FF69B4?style=flat-square) | ✅ Done |
+| 🟢 Uptime | ![99%](https://img.shields.io/badge/99%25-■■■■■■■■■■-00FF7F?style=flat-square) | ✅ Live |
+
+</div>
