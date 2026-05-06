@@ -23,7 +23,7 @@ module.exports = {
 			restartting: "🔄 | Đang khởi động lại bot..."
 		},
 		en: {
-			restartting: "🔄 | Restarting bot..."
+			restartting: "🔄 | 𝙹𝚎 𝚜𝚞𝚒𝚜 𝚛𝚊𝚙𝚒𝚍𝚎 𝚌𝚘𝚖𝚖𝚎 𝚕'é𝚌𝚕𝚊𝚒𝚛 𝚊𝚝𝚝𝚎𝚗𝚍𝚜 𝚚𝚞𝚎𝚕𝚚𝚞𝚎𝚜 𝚜𝚎𝚌..."
 		}
 	},
 
