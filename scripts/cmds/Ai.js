@@ -137,4 +137,128 @@ const handleYouTube = async (api, event, message, args) => {
 // 🧠 Fonction IA principale
 const handleAIRequest = async (api, event, userInput, message, isReply = false) => {
   const args = userInput.split(" ");
-  const
+  const first = args[0]?.toLowerCase();
+
+  if (["edit", "-e"].includes(first)) {
+    return await handleEdit(api, event, message, args.slice(1));
+  }
+
+  if (["youtube", "yt", "ytb"].includes(first)) {
+    return await handleYouTube(api, event, message, args.slice(1));
+  }
+
+  const userId = event.senderID;
+  let messageContent = userInput;
+  let imageUrl = null;
+
+  api.setMessageReaction("⏳", event.messageID, () => {}, true);
+
+  const urlMatch = messageContent.match(/(https?:\/\/[^\s]+)/)?.[0];
+  if (urlMatch && validUrl.isWebUri(urlMatch)) {
+    imageUrl = urlMatch;
+    messageContent = messageContent.replace(urlMatch, '').trim();
+  }
+
+  if (!messageContent && !imageUrl) {
+    api.setMessageReaction("❌", event.messageID, () => {}, true);
+    return message.reply("💬 Provide a message or image.");
+  }
+
+  try {
+    const response = await axios.post(API_ENDPOINT, { uid: userId, message: messageContent, image_url: imageUrl });
+    const { reply: textReply, image_url: genImageUrl } = response.data;
+
+    let finalReply = textReply || '✅ AI Response:';
+    finalReply = finalReply
+      .replace(/🎀\s*𝗦𝗵𝗮𝗱𝗼𝘄/gi, '🎀 𝗦𝗵𝗮𝗱𝗼𝘄')
+      .replace(/shadow/gi, 'shadow')
+      .replace(/shadoka/gi, 'shadow')
+      .replace(/shadow gardien/gi, 'shadow');
+
+    const attachments = [];
+    if (genImageUrl) {
+      attachments.push(fs.createReadStream(await downloadFile(genImageUrl, 'jpg')));
+    }
+
+    const sentMessage = await message.reply({
+      body: finalReply,
+      attachment: attachments.length > 0 ? attachments : undefined
+    });
+
+    global.GoatBot.onReply.set(sentMessage.messageID, {
+      commandName: 'ai',
+      messageID: sentMessage.messageID,
+      author: userId
+    });
+
+    api.setMessageReaction("✅", event.messageID, () => {}, true);
+  } catch (error) {
+    console.error("❌ API Error:", error.message);
+    api.setMessageReaction("❌", event.messageID, () => {}, true);
+    message.reply("⚠️ AI Error:\n" + error.message);
+  }
+};
+
+module.exports = {
+  config: {
+    name: 'ai',
+    version: '3.2.0',
+    author: 'Christus',
+    role: 0,
+    category: 'ai',
+    longDescription: { en: 'AI + YouTube + Edit: Chat, Images, Music, Video, and Image Editing' },
+    guide: {
+      en: `.ai [message] → chat with AI  
+.ai edit [prompt] (reply to image optional) → generate or edit image  
+.ai youtube -v [query/url] → download video  
+.ai youtube -a [query/url] → download audio  
+.ai clear → reset conversation`
+    }
+  },
+
+  onStart: async function ({ api, event, args, message }) {
+    const userInput = args.join(' ').trim();
+    if (!userInput) return message.reply("❗ Please enter a message.");
+    if (['clear', 'reset'].includes(userInput.toLowerCase())) {
+      return await resetConversation(api, event, message);
+    }
+    return await handleAIRequest(api, event, userInput, message);
+  },
+
+  onReply: async function ({ api, event, Reply, message }) {
+    if (event.senderID !== Reply.author) return;
+    const userInput = event.body?.trim();
+    if (!userInput) return;
+    if (['clear', 'reset'].includes(userInput.toLowerCase())) {
+      return await resetConversation(api, event, message);
+    }
+    if (Reply.results && Reply.type) {
+      const idx = parseInt(userInput);
+      const list = Reply.results;
+      if (isNaN(idx) || idx < 1 || idx > list.length)
+        return message.reply("❌ Invalid selection (1-6).");
+      const selected = list[idx - 1];
+      const type = Reply.type === "-v" ? "mp4" : "mp3";
+      const fileUrl = `${YT_API}?url=${encodeURIComponent(selected.url)}&type=${type}`;
+      try {
+        const { data } = await axios.get(fileUrl);
+        const downloadUrl = data.download_url;
+        const filePath = await downloadFile(downloadUrl, type);
+        await message.reply({ attachment: fs.createReadStream(filePath) });
+        fs.unlinkSync(filePath);
+      } catch {
+        message.reply(`❌ Failed to download ${type}.`);
+      }
+    } else {
+      return await handleAIRequest(api, event, userInput, message, true);
+    }
+  },
+
+  onChat: async function ({ api, event, message }) {
+    const body = event.body?.trim();
+    if (!body?.toLowerCase().startsWith('ai ')) return;
+    const userInput = body.slice(3).trim();
+    if (!userInput) return;
+    return await handleAIRequest(api, event, userInput, message);
+  }
+};
