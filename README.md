@@ -30,3 +30,21 @@
 | 🟢 Uptime | ![99%](https://img.shields.io/badge/99%25-■■■■■■■■■■-00FF7F?style=flat-square) | ✅ Live |
 
 </div>
+
+## 🪪 Connect & Support
+
+<div align="center">
+
+<a href="https://www.facebook.com/profile.php?id=100094118835962">
+  <img src="https://img.shields.io/badge/-Facebook%20%7C%20Azadx69x-1877F2?style=for-the-badge&logo=facebook&logoColor=white"/>
+</a>
+&nbsp;
+<a href="https://github.com/Christstars897876/Minato-Namikaze">
+  <img src="https://img.shields.io/badge/-GitHub%20%7C%20ncazad-181717?style=for-the-badge&logo=github&logoColor=white"/>
+</a>
+&nbsp;
+<a href="https://github.com/Christstars897876/Minato-Namikaze/issues">
+  <img src="https://img.shields.io/badge/-Report%20a%20Bug-FF4444?style=for-the-badge&logo=github&logoColor=white"/>
+</a>
+
+</div>
