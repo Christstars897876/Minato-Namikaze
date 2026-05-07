@@ -27,7 +27,7 @@ module.exports = {
 			const groups = groupList.filter(i => i.threadID && i.threadID.length >= 15);
 
 			if (!groups.length) {
-				return api.sendMessage("❌ | 𝐁𝐨𝐭 𝐈𝐬 𝐍𝐨𝐭 𝐈𝐧 𝐀𝐧𝐲 𝐆𝐫𝐨𝐮𝐩.", event.threadID);
+				return api.sendMessage("❌ | 𝚖𝚒𝚗𝚊𝚝𝚘 𝚗'𝚎𝚜𝚝 𝚙𝚊𝚜 𝚞𝚗 𝚐𝚛𝚘𝚞𝚙𝚎.", event.threadID);
 			}
 		    
 			const groupsWithNames = await Promise.all(
@@ -68,7 +68,7 @@ module.exports = {
 			});
 
 			msg += `╰───────────────╯\n\n`;
-			msg += `💬 𝐑𝐞𝐩𝐥𝐲 𝐖𝐢𝐭𝐡 𝐓𝐡𝐞 𝐆𝐫𝐨𝐮𝐩 𝐍𝐮𝐦𝐛𝐞𝐫 𝐓𝐨 𝐉𝐨𝐢𝐧.`;
+			msg += `💬 𝚁é𝚙𝚘𝚗𝚍𝚎𝚣 𝚊𝚟𝚎𝚌 𝚕𝚎 𝚗𝚞𝚖é𝚛𝚘 𝚍𝚞 𝚐𝚛𝚘𝚞𝚙𝚎 𝚙𝚘𝚞𝚛 𝚚𝚞𝚎 𝙼𝚒𝚗𝚊𝚝𝚘 𝚟𝚘𝚞𝚜 𝚝𝚎𝚕𝚎𝚙𝚘𝚛𝚝 𝚍𝚊𝚗𝚜 𝚕𝚎 𝚐𝚛𝚘𝚞𝚙𝚎..`;
 
 			const sent = await api.sendMessage(msg, event.threadID);
 
@@ -79,8 +79,8 @@ module.exports = {
 			});
 
 		} catch (err) {
-			console.log("🥀 𝐂𝐡𝐮𝐝𝐥𝐢𝐧𝐠 𝐏𝐨𝐧𝐠 𝐁𝐚𝐛𝐲:", err);
-			api.sendMessage("❌ | 𝐄𝐫𝐫𝐨𝐫 𝐆𝐞𝐭𝐭𝐢𝐧𝐠 𝐆𝐫𝐨𝐮𝐩 𝐋𝐢𝐬𝐭.", event.threadID);
+			console.log("🥷 𝙼𝚒𝚗𝚊𝚝𝚘 𝙱𝚎𝚋𝚎 𝚙𝚘𝚗𝚐 𝚚𝚞𝚒 𝚐𝚊𝚛𝚐𝚘𝚞𝚒𝚕𝚕𝚎:", err);
+			api.sendMessage("❌ | 𝙴𝚛𝚛𝚎𝚞𝚛 𝚕𝚘𝚛𝚜 𝚍𝚎 𝚕𝚊 𝚝é𝚕é𝚙𝚘𝚛𝚝𝚊𝚝𝚒𝚘𝚗 𝚍𝚎 𝚕𝚊 𝚕𝚒𝚜𝚝𝚎 𝚍𝚎𝚜 𝚐𝚛𝚘𝚞𝚙𝚎𝚜.", event.threadID);
 		}
 	},
 
@@ -91,7 +91,7 @@ module.exports = {
 		const groups = Reply.groups;
 
 		if (isNaN(index) || index < 1 || index > groups.length) {
-			return api.sendMessage("⚠️ | 𝐈𝐧𝐯𝐚𝐥𝐢𝐝 𝐆𝐫𝐨𝐮𝐩 𝐍𝐮𝐦𝐛𝐞𝐫.", event.threadID, event.messageID);
+			return api.sendMessage("⚠️ | 𝙼𝚒𝚗𝚊𝚝𝚘: 𝚗𝚞𝚖é𝚛𝚘 𝚍𝚎 𝚐𝚛𝚘𝚞𝚙𝚎 𝚒𝚗𝚟𝚊𝚕𝚒𝚍𝚎.", event.threadID, event.messageID);
 		}
 
 		const group = groups[index - 1];
@@ -103,7 +103,7 @@ module.exports = {
 
 			if (info.participantIDs.includes(event.senderID)) {
 				return api.sendMessage(
-					`⚠️ | 𝐘𝐨𝐮 𝐀𝐫𝐞 𝐀𝐥𝐫𝐞𝐚𝐝𝐲 𝐈𝐧\n${currentName}`,
+					`⚠️ | 𝚃𝚞 é𝚝𝚊𝚒𝚝 𝚍é𝚓à 𝚝𝚎𝚕𝚎𝚙𝚘𝚛𝚝𝚎𝚛 𝚜𝚊𝚗𝚜 𝚕𝚎 𝚜𝚊𝚟𝚘𝚒𝚛\n${currentName}`,
 					event.threadID,
 					event.messageID
 				);
@@ -111,7 +111,7 @@ module.exports = {
 
 			if (info.participantIDs.length >= 250) {
 				return api.sendMessage(
-					`❌ | 𝐆𝐫𝐨𝐮𝐩 𝐈𝐬 𝐅𝐮𝐥𝐥\n${currentName}`,
+					`❌ | 𝙼𝚒𝚗𝚊𝚝𝚘 à 𝚝𝚎𝚕𝚎𝚙𝚘𝚛𝚝𝚎𝚛 𝚙𝚕𝚎𝚒𝚗𝚜 𝚍𝚎𝚜 𝚐𝚎𝚗𝚜\n${currentName}`,
 					event.threadID,
 					event.messageID
 				);
@@ -120,14 +120,14 @@ module.exports = {
 			await api.addUserToGroup(event.senderID, group.threadID);
 
 			api.sendMessage(
-				`✅ | 𝐉𝐨𝐢𝐧𝐞𝐝 𝐒𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲\n${currentName}`,
+				`✅ | 𝚃𝚎𝚕𝚎𝚙𝚘𝚛𝚝𝚊𝚝𝚒𝚘𝚗 𝚛é𝚞𝚜𝚜𝚒𝚎\n${currentName}`,
 				event.threadID,
 				event.messageID
 			);
 
 		} catch (err) {
-			console.log("𝐉𝐨𝐢𝐧 𝐑𝐞𝐩𝐥𝐲 𝐄𝐫𝐫𝐨𝐫:", err);
-			api.sendMessage("❌ | 𝐂𝐡𝐮𝐝𝐥𝐢𝐧𝐠 𝐏𝐨𝐧𝐠", event.threadID, event.messageID);
+			console.log("𝙳é𝚜𝚘𝚕𝚎 𝚓'𝚊𝚒 𝚙𝚊𝚜 𝚛é𝚞𝚜𝚜𝚒 à 𝚝𝚎 𝚝𝚎𝚕𝚎𝚙𝚘𝚛𝚝𝚎𝚛:", err);
+			api.sendMessage("❌ | 𝚙𝚘𝚗𝚐 𝚌𝚑𝚞𝚍𝚕𝚒𝚗𝚐", event.threadID, event.messageID);
 		}
 
 		global.GoatBot.onReply.delete(event.messageID);
