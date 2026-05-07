@@ -1,4 +1,4 @@
- module.exports = {
+module.exports = {
   config: {
     name: "autoreact",
     author: "chris st",
@@ -17,15 +17,15 @@
     const message = event.body.toLowerCase();
 
     const reactionsMap = {
-      "😂": ["haha", "lol", "drole", "funny", "hahah", "hahaha", "masaya", "happy", "🤣", "natomba", "tumomba", "tomomba", "tumumba", "tomumba", "side eye", "awooop jumpscare", "so masaya ka?", "sana all", "mdr"],
-      "😭": ["cry", "sad", "crying", "bakit ka malungkot?", "bakit ka malongkot?", "hindi na", "sad ka", "walang ulam"],
+      "😂": ["haha", "lol", "drole", "funny", "hahah", "hahaha", "masaya", "happy", "heureux", "🤣", "natomba", "tumomba", "tomomba", "tumumba", "tomumba", "side eye", "awooop jumpscare", "so masaya ka?", "sana all", "mdr"],
+      "😭": ["cry", "triste", "sad", "crying", "bakit ka malungkot?", "bakit ka malongkot?", "hindi na", "sad ka", "walang ulam"],
       "🥰": ["love", "mahal", "crush", "amour" "t'aime" "aime", "bb", "baby",],
       "🎮": ["laro", "laru", "game", "mc", "minecraft", "ml", "mlbb", "mobile legends", "mobile legends bang bang", "cod", "call of duty", "jeux", "PlayStation", "psp", "ppsspp", "free fire"],
-      "🙋": ["salut", "hey", "how", "hi", "slt", "xlt", "cv", "çv", "bien"],
-      "🫂": ["merci", "beaucoup", "de", "rien" "thanks"]
+      "🙋": ["salut", "hey", "how", "hi", "slt", "xlt", "cv", "çv", "bien", "peux"],
+      "🫂": ["merci", "beaucoup", "de", "rien", "thanks", "bot", "prefix", "anime", "être",]
       "😐": ["pourquoi", "mère", "mere", "quoi", "que", ".", "?", "=", "@", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-      // Add more reactions and associated keywords as needed
       //Ajoutez d'autres réactions et mots-clés associés selon les besoins.
+      
     };
 
     console.log("Message:", message);
