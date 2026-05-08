@@ -66,6 +66,22 @@ module.exports = {
       msg += `\n~𝙉𝘼𝙈𝙀:𝙲𝙷𝚁𝙸𝚂 𝚂𝚃`;
       msg += `\n~𝙁𝘽:https://www.facebook.com/profile.php?id=100094118835962`;
 
+      
+      const helpListImages = [
+ 
+"https://i.ibb.co/Kgn10xG/684797258-1327405002818159-3504065921443860282-n-jpg-stp-dst-jpg-p480x480-tt6-nc-cat-109-ccb-1-7-n.jpg",
+"https://i.ibb.co/HT4Hk6SF/649666902-1547549473009164-5960445224328660848-n-jpg-stp-dst-jpg-p480x480-tt6-nc-cat-104-ccb-1-7-n.jpg', ",
+"https://i.ibb.co/HTjs925j/685155293-936519109213674-2388955215511618307-n-jpg-stp-dst-jpg-s480x480-tt6-nc-cat-105-ccb-1-7-nc.jpg",
+"https://i.ibb.co/svXBgxw2/516688787-1388605512441969-5696309895683148133-n-jpg-stp-dst-jpg-p480x480-tt6-nc-cat-107-ccb-1-7-n.jpg",
+"https://i.ibb.co/0HkWH81/691200995-2775407616149485-9104723335245991500-n-gif-nc-cat-106-ccb-1-7-nc-sid-cf94fc-nc-eui2-Ae-E.gif",
+"https://i.ibb.co/VYLq0rX3/495047004-2156248254796411-1328262576645206658-n-jpg-stp-dst-jpg-s480x480-tt6-nc-cat-108-ccb-1-7-n.jpg",
+"https://i.ibb.co/rTMN49m/686398590-1537926281285123-3076869716863077899-n-jpg-stp-dst-jpg-p480x480-tt6-nc-cat-102-ccb-1-7-n.jpg"
+];
+ 
+ 
+      const helpListImage = helpListImages[Math.floor(Math.random() * helpListImages.length)];
+ 
+
       await message.reply({
         body: msg,
       });
