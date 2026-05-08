@@ -3,7 +3,11 @@
 </div>
 <h1 align="center">𝐌𝐈𝐍𝐀𝐓𝐎 𝐍𝐀𝐌𝐈𝐊𝐀𝐙𝐄 𝗖𝗵𝗮𝘁𝗯𝗼𝘁 𝗠𝗲𝘀𝘀𝗲𝗻𝗴𝗲𝗿</h1>
 ## 🔐 Permission Levels
+<div align="center">
+  <img src="https://i.ibb.co/jZLYgts6/686197467-1343993427639007-956223238050985491-n-jpg-stp-dst-jpg-p480x480-tt6-nc-cat-108-ccb-1-7-nc.jpg" width="90%" style="border-radius:12px; border: 2px solid #00FFFF;"/>
+</div>
 
+<h1 align="center">𝙰𝙳𝙼𝙸𝙽𝙸𝚂𝚃𝚁𝙰𝚃𝙴𝚄𝚁 : 𝙲𝙷𝚁𝙸𝚂 𝚂𝚃</h1>
 <div align="center">
 
 | Level | Role | Bar | Access |
