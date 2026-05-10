@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const Prefixes = ["ai", "anjara", "ae"];
+const Prefixes = ["namikaze", "minato", "ae"];
 const RP = "Ajoute des Emojis et répond à la question";
 
 const fonts = {
@@ -35,28 +35,28 @@ async function sendImages(images, message) {
       const stream = await global.utils.getStreamFromURL(url);
       await message.reply({ attachment: stream });
     } catch (e) {
-      console.log(`❌ Erreur image : ${url}`);
+      console.log(`❌ 𝖤𝗋𝗋𝖾𝗎𝗋 𝗂𝗆𝖺𝗀𝖾 : ${url}`);
     }
   }
 }
 
 module.exports = {
   config: {
-    name: "ae",
-    aliases: ["ae"],
+    name: "minato",
+    aliases: ["minato"],
     version: "2.2",
-    author: "Aesther",
+    author: "chris st",
     countDown: 2,
     role: 0,
     shortDescription: "🤖 AI + images multiples",
-    longDescription: "Pose une question à l’IA et reçois du texte stylisé et toutes les images en direct.",
+    longDescription: "Pose une question à minato justement en écrivant minatoet reçois du texte stylisé et toutes les images en direct.",
     category: "ai",
     guide: "{pn} <question>"
   },
 
   onStart: async function ({ message, args, event, api }) {
     const prompt = args.join(" ").trim();
-    if (!prompt) return message.reply("❌ Pose une question à l’IA.");
+    if (!prompt) return message.reply("🥷 𝖯𝗈𝗌𝖾 𝗎𝗇𝖾 𝗊𝗎𝖾𝗌𝗍𝗂𝗈𝗇 à 𝖬𝗂𝗇𝖺𝗍𝗈 𝗇𝖺𝗆𝗂𝗄𝖺𝗓𝖾.");
 
     try {
       const url = `https://haji-mix-api.gleeze.com/api/groq?ask=${encodeURIComponent(prompt)}&model=llama-3.3-70b-versatile&uid=56666&RP=${encodeURIComponent(RP)}&stream=True`;
@@ -86,7 +86,7 @@ module.exports = {
 
     } catch (err) {
       console.error(err.message);
-      return message.reply(applyFont("❌ Erreur de réponse IA."));
+      return message.reply(applyFont("❌ 𝖤𝗋𝗋𝖾𝗎𝗋 𝖽𝖾 𝗋é𝗉𝗈𝗇𝗌𝖾 𝗆𝗂𝗇𝖺𝗍𝗈."));
     }
   },
 
@@ -107,7 +107,7 @@ module.exports = {
       const url = `https://haji-mix-api.gleeze.com/api/groq?ask=${encodeURIComponent(prompt)}&model=llama-3.3-70b-versatile&uid=56666&RP=${encodeURIComponent(RP)}&stream=True`;
       const res = await axios.get(url, { timeout: 20000 });
 
-      const raw = res.data?.answer || res.data?.result || res.data?.message || "🤖 Rien reçu.";
+      const raw = res.data?.answer || res.data?.result || res.data?.message || "🥷 𝖱𝗂𝖾𝗇 𝗋𝖾ç𝗎 𝖼𝗁𝖾𝗓 𝗆𝗂𝗇𝖺𝗍𝗈.";
       const styled = applyFont(raw);
       const images = extractImages(raw);
       const chunks = splitMessage(styled);
@@ -131,7 +131,7 @@ module.exports = {
 
     } catch (err) {
       console.error(err.message);
-      return message.reply(applyFont("❌ Réponse IA échouée."));
+      return message.reply(applyFont("❌ 𝖱é𝗉𝗈𝗇𝗌𝖾 𝗆𝗂𝗇𝖺𝗍𝗈 é𝖼𝗁𝗈𝗎é."));
     }
   }
 };
