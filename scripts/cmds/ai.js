@@ -203,7 +203,7 @@ module.exports = {
   config: {
     name: 'ai',
     version: '3.2.0',
-    author: 'Christus',
+    author: 'chris',
     role: 0,
     category: 'ai',
     longDescription: { en: 'AI + YouTube + Edit: Chat, Images, Music, Video, and Image Editing' },
